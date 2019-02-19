@@ -1,0 +1,53 @@
+pragma solidity ^0.4.25;
+
+contract vote {
+    
+    mapping (string => _inform)voteinform;
+    
+    struct _inform{
+        mapping(string=>uint256) inform;
+        mapping (address=>bool) voter;
+        address owner;
+        bool valid;
+        bool ending;
+    }
+    
+    modifier _onlyOwner (string _title) {
+        require(voteinform[_title].owner == msg.sender, "You are not the vote owner");
+        _;
+    }
+    
+    modifier _notEnded (string _title) {
+        require(!voteinform[_title].ending, "voting was ended");
+        _;
+    }
+    
+    modifier _validvote (string _title) {
+        require(voteinform[_title].valid, "The vote was not created");
+        _;
+    }
+    
+    modifier _validvoter (string _title) {
+        require(!voteinform[_title].voter[msg.sender], "You already voted");
+        _;
+    }
+    
+    function uploadvoting (string _title) public {
+        voteinform[_title].owner = msg.sender;
+        voteinform[_title].valid = true;
+    }
+    
+    function voting (string _title, string _choice) _validvote(_title) _validvoter(_title) _notEnded(_title) public {
+        voteinform[_title].voter[msg.sender] = true;
+        require(voteinform[_title].inform[_choice] < voteinform[_title].inform[_choice] + 1);
+        voteinform[_title].inform[_choice] += 1;
+    }
+    
+    function show_information (string _title, string _choice) view public returns(string, string, uint256){
+        return (_title, _choice, voteinform[_title].inform[_choice]);
+    }
+    
+    function end (string _title) _onlyOwner(_title) public {
+        voteinform[_title].ending = true;
+    }
+}
