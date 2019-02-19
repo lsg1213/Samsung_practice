@@ -1,0 +1,34 @@
+pragma solidity ^0.4.25;
+
+contract Delegation {
+    uint a;
+    uint b;
+    uint c;
+    
+    function set() public {
+        a = 1;
+        b = 2;
+        c = 3;
+    }
+}
+
+contract Delegate {
+    uint b;
+    uint c;
+    uint a;
+    Delegation del;
+    
+    constructor (Delegation _del) public {
+        del = _del;
+    }
+    
+    function delegate() public {
+        if (address(del).delegatecall(bytes4(keccak256("set()")))) {
+            this;
+        }
+    }
+    
+    function show() public view returns (uint, uint, uint) {
+        return (a,b,c);
+    }
+}
