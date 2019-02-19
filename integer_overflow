@@ -1,0 +1,13 @@
+pragma solidity ^0.4.25;
+
+contract Integer_overflow {
+  mapping(address => uint8) working_time;
+  
+  function register_working(uint8 _time) public {
+    working_time[msg.sender] += _time;
+  }
+  
+  function showing_time() public view returns(uint 8) {
+    return working_time[msg.sender];
+  }
+}
