@@ -1,17 +1,31 @@
 pragma solidity ^0.4.25;
 
 contract vote {
-    // 주인, 제목, 종료여부, 투표자들의 투표여부, 각 선택지별 득표수 변수 선언
-
-
-    // 생성자 (입력값으로 투표 제목) 제목과 주인 변수에 저장
-
-
-    // 투표하기 함수(입력값으로 선택지) 투표여부확인, 투표종료여부확인, 투표자의 투표 여부 변경, 오버플로우 확인, 득표 + 1
+    address owner;
+    string title;
+    bool ending;
+    mapping (string=>uint256) inform;
+    mapping (address=>bool) voter;
     
-
-    // 투표확인 view함수(입력값으로 선택지) 투표제목, 선택지, 득표수 출력
+    constructor(string _title) public {
+        title = _title;
+        owner = msg.sender;
+    }
     
-
-    // 투표종료 함수 투표 주인 확인, 종료여부 변경
+    function voting (string _choice) public {
+        require(!voter[msg.sender]);
+        require(!ending);
+        voter[msg.sender] = true;
+        require(inform[_choice] < inform[_choice] + 1);
+        inform[_choice] += 1;
+    }
+    
+    function show_information (string _choice) view public returns(string, string, uint256){
+        return (title, _choice, inform[_choice]);
+    }
+    
+    function end () public {
+        require(owner == msg.sender);
+        ending = true;
+    }
 }
