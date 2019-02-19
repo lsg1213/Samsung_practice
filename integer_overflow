@@ -7,7 +7,7 @@ contract Integer_overflow {
     working_time[msg.sender] += _time;
   }
   
-  function showing_time() public view returns(uint 8) {
+  function showing_time() public view returns(uint8) {
     return working_time[msg.sender];
   }
 }
